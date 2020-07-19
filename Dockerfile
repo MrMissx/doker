@@ -71,6 +71,3 @@ RUN apt-get update -qq && \
 # Git
 RUN git config --global user.email "keselekpermen69@gmail.com"
 RUN git config --global user.name "KeselekPermen69"
-
-# Clang
-RUN git clone https://github.com/kdrag0n/proton-clang -b master --depth=1 /root/proton-11
