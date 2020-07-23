@@ -125,6 +125,7 @@ RUN set -ex && \
 		aria2 \
 		chromium \
 		chromium-chromedriver \
+		coreutils \
 		ffmpeg \
 		figlet \
 		freetype-dev \
