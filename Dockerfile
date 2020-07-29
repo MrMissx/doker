@@ -17,9 +17,9 @@ FROM alpine:edge
 ENV LANG=C.UTF-8 \
     PATH=/usr/local/bin:$PATH \
     PYTHON_VERSION=3.8.3 \
-    PYTHON_PIP_VERSION=20.1.1 \
+    PYTHON_PIP_VERSION=20.2 \
     PYTHON_GET_PIP_URL=https://bootstrap.pypa.io/get-pip.py \
-    PYTHON_GET_PIP_SHA256=b3153ec0cf7b7bbf9556932aa37e4981c35dc2a2c501d70d91d2795aa532be79 \
+    PYTHON_GET_PIP_SHA256=a30ff8a3446c592c6d70403a82483716e7b759e8eecba2c8d3f6ecfb34a8d6d7 \
     PYTHON_GPG_KEY=E3FF2839C048B25C084DEBE9B26995E310250568
 
 
@@ -29,6 +29,7 @@ RUN set -ex && \
 		bzip2-dev \
 		ca-certificates \
 		curl \
+		coreutils \
 		dpkg \
 		dpkg-dev \
 		expat-dev \
@@ -85,11 +86,8 @@ RUN cd /usr/src/python \
 		--enable-ipv6 \
 		--disable-shared \
 		--with-system-expat \
-		--with-system-ffi \
 		--without-ensurepip \
 	&& make -j "$(nproc)" \
-		EXTRA_CFLAGS="-DTHREAD_STACK_SIZE=0x100000" \
-		LDFLAGS="-Wl,--strip-all" \
 	&& make install
 
 RUN strip /python/bin/python3.8 && \
@@ -98,15 +96,16 @@ RUN strip /python/bin/python3.8 && \
 	rm /python/lib/libpython3.8.a && \
 	ln /python/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8.a /python/lib/libpython3.8.a
 
+# install pip
 RUN set -ex; \
 	\
 	wget --no-verbose --output-document=get-pip.py "$PYTHON_GET_PIP_URL"; \
-	echo "$PYTHON_GET_PIP_SHA256 *get-pip.py" | sha256sum -cs -; \
+	echo "$PYTHON_GET_PIP_SHA256 *get-pip.py" | sha256sum --check --strict -; \
 	\
 	/python/bin/python3 get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
-		"pip==$PYTHON_PIP_VERSION"
+		"pip==$PYTHON_PIP_VERSION" "wheel"
 
 RUN ln -s /python/bin/python3-config /usr/local/bin/python-config && \
 	ln -s /python/bin/python3 /usr/local/bin/python && \
@@ -125,7 +124,6 @@ RUN set -ex && \
 		aria2 \
 		chromium \
 		chromium-chromedriver \
-		coreutils \
 		ffmpeg \
 		figlet \
 		freetype-dev \
@@ -136,8 +134,8 @@ RUN set -ex && \
 		postgresql-dev \
 		postgresql-client
 
-# Instal Userbot requirements
-RUN pip install --no-cache-dir -r https://raw.githubusercontent.com/KeselekPermen69/UserButt/sql-extended/requirements.txt
+# Instal UserButt requirements
+RUN pip3 install --no-cache-dir -r https://raw.githubusercontent.com/KeselekPermen69/UserButt/sql-extended/requirements.txt
 
 RUN set -ex; \
 	\
@@ -159,4 +157,10 @@ RUN set -ex; \
 	rm -rf /usr/src/python; \
 	rm -rf /get-pip.py;
 
-CMD ["python3"]
+# make some useful symlinks that are expected to exist
+RUN cd /usr/local/bin \
+	&& ln -s idle3 idle \
+	&& ln -s pydoc3 pydoc \
+	&& ln -s python3-config
+
+CMD ["bash"]
