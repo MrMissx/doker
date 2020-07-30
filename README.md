@@ -4,5 +4,8 @@
 
 How to use?
 ```
+docker pull mrmiss/userbutt:latest
+```
+```
 docker pull mrmiss/userbutt:alpine-latest
 ```
