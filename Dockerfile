@@ -182,6 +182,7 @@ RUN wget -N https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedrive
     chmod 0755 /usr/bin/chromedriver
 
 # Install python requirements
-RUN pip install -r https://raw.githubusercontent.com/keselekpermen69/UserButt/sql-extended/requirements.txt
+add https://raw.githubusercontent.com/keselekpermen69/UserButt/sql-extended/requirements.txt requirements.txt
+RUN pip install -r requirements.txt
 
 CMD ["bash"]
