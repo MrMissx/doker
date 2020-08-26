@@ -19,6 +19,7 @@ RUN apt-get update -qq && \
 	binutils-aarch64-linux-gnu \
 	binutils-arm-linux-gnueabi \
 	bison \
+	build-essential \
 	bzip2 \
 	ca-certificates \
 	coreutils \
@@ -57,6 +58,7 @@ RUN apt-get update -qq && \
 	rsync \
 	shtool \
 	subversion \
+	sudo \
 	tar \
 	texinfo \
 	tzdata \
