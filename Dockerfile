@@ -30,6 +30,7 @@ RUN apt-get update -qq && \
 	g++ \
 	gawk \
 	gcc \
+	gcc-aarch64-linux-gnu \
 	git \
 	gnupg \
 	gperf \
